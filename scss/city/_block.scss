@@ -1,0 +1,33 @@
+// City blocks sit on the land; their placement comes from the HTML (--x,
+// --y, --w, --d in tiles). The kind sets the surface.
+@use '../core/functions' as f;
+
+$pavement: #b7afa2;
+$curb: #8f877b;
+$grass: #6c9450;
+
+.block {
+  position: absolute;
+  top: f.tile-var(y);
+  left: f.tile-var(x);
+  width: f.tile-var(w);
+  height: f.tile-var(d);
+  transform-style: preserve-3d;
+  transform: translateZ(1px);
+  background-color: $pavement;
+  box-shadow: inset 0 0 0 3px $curb;
+}
+
+.block--park {
+  background-color: $grass;
+  background-image: radial-gradient(rgb(255 255 255 / 6%) 1px, transparent 2px);
+  background-size: 11px 11px;
+}
+
+.block--plaza {
+  background-color: #c9bfae;
+  background-image:
+    linear-gradient(rgb(0 0 0 / 7%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 0 0 / 7%) 1px, transparent 1px);
+  background-size: 10px 10px;
+}

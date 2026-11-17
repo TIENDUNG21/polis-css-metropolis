@@ -1,0 +1,59 @@
+// Land slabs either side of the river. The slab top is the street level
+// (asphalt: roads are the gaps between blocks); the hanging sides make the
+// city read as a diorama cut out of the ground.
+@use '../core/tokens' as t;
+@use '../core/functions' as f;
+@use '../core/mixins' as m;
+
+$asphalt: #3d4046;
+$soil: #5a4434;
+$soil-deep: #3b2c22;
+$stone: #8e877b;
+
+.land {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transform-style: preserve-3d;
+  background-color: $asphalt;
+  background-image:
+    radial-gradient(rgb(255 255 255 / 4%) 1px, transparent 1.5px),
+    radial-gradient(rgb(0 0 0 / 10%) 1px, transparent 1.5px);
+  background-position: 0 0, 3px 5px;
+  background-size: 7px 7px, 9px 9px;
+}
+
+.land--west {
+  left: 0;
+  width: f.tiles(t.$river-x);
+}
+
+.land--east {
+  left: f.tiles(t.$river-x + t.$river-w);
+  width: f.tiles(t.$world-cols - t.$river-x - t.$river-w);
+}
+
+@include m.slab-sides(land, t.$slab-depth);
+
+.land__side--s {
+  background: linear-gradient(to bottom, $stone 0 3px, $soil 3px, $soil-deep);
+}
+
+// Outer edges of the world are cut soil; the sides facing the river are
+// stone quay walls down to the water. A west-facing side has its ground
+// edge on its local right, an east-facing side on its local left.
+.land--west .land__side--w {
+  background: linear-gradient(to left, $stone 0 3px, $soil 3px, $soil-deep);
+}
+
+.land--east .land__side--e {
+  background: linear-gradient(to right, $stone 0 3px, $soil 3px, $soil-deep);
+}
+
+.land--west .land__side--e {
+  background: linear-gradient(to right, $stone 0 t.$river-sink, $soil-deep t.$river-sink);
+}
+
+.land--east .land__side--w {
+  background: linear-gradient(to left, $stone 0 t.$river-sink, $soil-deep t.$river-sink);
+}

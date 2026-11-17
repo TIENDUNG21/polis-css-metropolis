@@ -1,0 +1,69 @@
+@use 'tokens' as t;
+
+/// Hidden visually, still read by assistive technology and still focusable.
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/// A flat face of a 3D object. Back faces are hidden, so a convex box only
+/// draws the sides that face the camera.
+@mixin face {
+  position: absolute;
+  display: block;
+  backface-visibility: hidden;
+}
+
+/// Three hanging sides (south, east, west) for a slab whose top is the
+/// element itself. Children must be .<block>__side--s|e|w.
+/// @param {String} $block BEM block name
+/// @param {Length} $depth
+@mixin slab-sides($block, $depth) {
+  .#{$block}__side {
+    @include face;
+  }
+
+  .#{$block}__side--s {
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: $depth;
+    transform-origin: top;
+    transform: rotateX(-90deg);
+  }
+
+  .#{$block}__side--e {
+    top: 0;
+    left: 100%;
+    width: $depth;
+    height: 100%;
+    transform-origin: left;
+    transform: rotateY(90deg);
+  }
+
+  .#{$block}__side--w {
+    top: 0;
+    right: 100%;
+    width: $depth;
+    height: 100%;
+    transform-origin: right;
+    transform: rotateY(-90deg);
+  }
+}
+
+/// Rules that apply while a radio of the console is checked. Used on the
+/// .polis root, which is the single place where world state is written.
+/// @param {String} $group radio name
+/// @param {String} $value radio value
+@mixin when($group, $value) {
+  &:has(input[name='#{$group}'][value='#{$value}']:checked) {
+    @content;
+  }
+}

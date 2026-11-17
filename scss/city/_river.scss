@@ -1,0 +1,26 @@
+// The river is a channel: water sits below street level between quay walls.
+@use '../core/tokens' as t;
+@use '../core/functions' as f;
+@use '../core/mixins' as m;
+
+$water: #3a7590;
+$water-deep: #1f4a5e;
+
+.river {
+  position: absolute;
+  top: 0;
+  left: f.tiles(t.$river-x);
+  width: f.tiles(t.$river-w);
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: translateZ(-1 * t.$river-sink);
+  background:
+    repeating-linear-gradient(170deg, rgb(255 255 255 / 0%) 0 9px, rgb(255 255 255 / 9%) 9px 11px),
+    linear-gradient(to right, $water-deep, $water 30%, $water 70%, $water-deep);
+}
+
+@include m.slab-sides(river, t.$slab-depth - t.$river-sink);
+
+.river__side--s {
+  background: linear-gradient(to bottom, rgb(120 180 205 / 90%), $water-deep 40%, #3b2c22);
+}

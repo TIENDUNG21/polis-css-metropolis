@@ -6,14 +6,34 @@ $ink: #0a0a0a;
 $paper: #ededed;
 $accent: #ff9e64;
 $muted: #9a9a9a;
-
-// Geometry
-$tile: 20px;
-$floor: 7px;
-$world-cols: 60;
-$world-rows: 44;
-$slab-depth: 28px;
+$panel: rgb(10 10 10 / 78%);
+$hairline: rgb(237 237 237 / 14%);
 
 // Type
 $font-sans: ui-sans-serif, system-ui, 'Segoe UI', roboto, 'Helvetica Neue', arial, sans-serif;
 $font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', menlo, consolas, monospace;
+
+// Geometry: the world is a grid of tiles; buildings are measured in floors.
+$tile: 20px;
+$floor: 7px;
+$world-cols: 60;
+$world-rows: 44;
+$world-w: $world-cols * $tile;
+$world-d: $world-rows * $tile;
+$slab-depth: 30px;
+
+// The river runs north-south through the world, sunk below street level.
+$river-x: 38;
+$river-w: 4;
+$river-sink: 14px;
+
+// Avenues (roads are the gaps between blocks; these place the markings).
+$avenue-a-y: 20;
+$avenue-a-d: 3;
+$avenue-b-x: 16;
+$avenue-b-w: 3;
+
+// Motion
+$ease-camera: cubic-bezier(0.65, 0, 0.35, 1);
+$camera-time: 1.8s;
+$state-time: 2s;

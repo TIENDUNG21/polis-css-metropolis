@@ -1,0 +1,36 @@
+@use '../core/tokens' as t;
+
+.masthead {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 3;
+  max-width: min(420px, calc(100% - 48px));
+  pointer-events: none;
+}
+
+.masthead__name {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.masthead__logo {
+  width: 28px;
+  height: 28px;
+}
+
+.masthead__sub {
+  color: t.$accent;
+  font-weight: 500;
+}
+
+.masthead__tagline {
+  margin: 4px 0 0;
+  color: rgb(237 237 237 / 72%);
+  font-size: 0.9rem;
+}

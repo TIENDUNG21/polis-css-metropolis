@@ -1,0 +1,24 @@
+@use 'sass:math';
+@use 'sass:meta';
+@use 'tokens' as t;
+
+/// Tiles to pixels for a static number of tiles.
+/// @param {Number} $n
+@function tiles($n) {
+  @if meta.type-of($n) != 'number' or not math.is-unitless($n) {
+    @error 'tiles() expects a unitless number, got #{meta.inspect($n)}';
+  }
+
+  @return $n * t.$tile;
+}
+
+/// Tiles to pixels for a custom property written by the HTML (e.g. --x).
+/// @param {String} $prop name without the leading dashes
+@function tile-var($prop) {
+  @return calc(var(--#{$prop}) * #{t.$tile});
+}
+
+/// Building height from its --h (floors).
+@function height-var() {
+  @return calc(var(--h) * #{t.$floor});
+}

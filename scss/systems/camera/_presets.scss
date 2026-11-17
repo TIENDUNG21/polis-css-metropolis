@@ -1,0 +1,65 @@
+// Camera presets. Each radio writes the camera variables on .polis; the
+// camera's transform reads them and transitions between presets. Spin stays
+// within (-90deg, 90deg) so only south, east and west walls ever face the
+// camera, which is why buildings have no north wall.
+@use '../../core/mixins' as m;
+
+.polis {
+  --fit: 0.74;
+  --cam-tilt: 57deg;
+  --cam-spin: -34deg;
+  --cam-zoom: 1;
+  --cam-focus-x: 0px;
+  --cam-focus-y: 30px;
+  --cam-lift: 0px;
+  --cam-perspective: 3200px;
+
+  @include m.when(camera, aerial) {
+    --cam-tilt: 30deg;
+    --cam-spin: -14deg;
+    --cam-zoom: 0.94;
+    --cam-focus-y: 0px;
+  }
+
+  @include m.when(camera, street) {
+    --cam-tilt: 74deg;
+    --cam-spin: 26deg;
+    --cam-zoom: 2.3;
+    --cam-focus-x: -230px;
+    --cam-focus-y: 40px;
+    --cam-lift: 60px;
+    --cam-perspective: 1400px;
+  }
+
+  @include m.when(camera, river) {
+    --cam-tilt: 64deg;
+    --cam-spin: -62deg;
+    --cam-zoom: 1.9;
+    --cam-focus-x: 200px;
+    --cam-focus-y: 30px;
+    --cam-perspective: 1800px;
+  }
+
+  @include m.when(camera, plan) {
+    --cam-tilt: 0deg;
+    --cam-spin: 0deg;
+    --cam-zoom: 0.78;
+    --cam-focus-y: 0px;
+  }
+
+  @media (width <= 1280px) {
+    --fit: 0.64;
+  }
+
+  @media (width <= 1024px) {
+    --fit: 0.54;
+  }
+
+  @media (width <= 768px) {
+    --fit: 0.42;
+  }
+
+  @media (width <= 480px) {
+    --fit: 0.28;
+  }
+}

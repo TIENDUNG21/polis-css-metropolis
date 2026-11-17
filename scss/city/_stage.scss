@@ -1,0 +1,51 @@
+// The stage holds the sky (2D), the 3D viewport and the 2D overlays.
+// The camera rig: viewport (perspective) > camera (rotations, zoom, focus)
+// > world (the city plate, centred on the camera origin).
+@use '../core/tokens' as t;
+
+.stage {
+  position: relative;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #1b2633;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
+.viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: var(--cam-perspective);
+  perspective-origin: 50% 30%;
+}
+
+.camera {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform-style: preserve-3d;
+  transform: translateY(var(--cam-lift)) rotateX(var(--cam-tilt)) rotateZ(var(--cam-spin))
+    scale3d(
+      calc(var(--fit) * var(--cam-zoom)),
+      calc(var(--fit) * var(--cam-zoom)),
+      calc(var(--fit) * var(--cam-zoom))
+    )
+    translate3d(calc(var(--cam-focus-x) * -1), calc(var(--cam-focus-y) * -1), 0);
+  transition: transform t.$camera-time t.$ease-camera;
+}
+
+.world {
+  position: absolute;
+  top: -0.5 * t.$world-d;
+  left: -0.5 * t.$world-w;
+  width: t.$world-w;
+  height: t.$world-d;
+  transform-style: preserve-3d;
+}
