@@ -1,10 +1,11 @@
 // Polis CSS Metropolis: entry point.
 // Property registrations are global. Everything else is loaded into
 // cascade layers, in order of priority (last wins): base styles, the city
-// geometry, the systems that change it, and the page UI.
+// geometry, the systems that change it, the page UI, and the accessibility
+// overrides, which must beat every system's animation rules.
 @use 'sass:meta';
 @use 'core/properties';
-@layer base, city, systems, ui;
+@layer base, city, systems, ui, a11y;
 
 @layer base {
   @include meta.load-css('core/base');
@@ -39,3 +40,6 @@
   @include meta.load-css('ui/hud');
 }
 
+@layer a11y {
+  @include meta.load-css('a11y/motion');
+}

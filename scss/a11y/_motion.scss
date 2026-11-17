@@ -1,0 +1,33 @@
+// Motion controls. This module is loaded into the last cascade layer, so
+// its rules win over every system's animation rules without !important.
+// - "Motion: Paused" in the console pauses every animation in the city
+//   (day cycle, traffic, boat, rain, snow, clouds, fog) where it is. This is
+//   the WCAG 2.2.2 "Pause, Stop, Hide" mechanism.
+// - prefers-reduced-motion: reduce does the same from the first frame, and
+//   the camera jumps between presets instead of flying. Colour and light
+//   fades stay: they change brightness, not position.
+@use '../core/mixins' as m;
+
+.polis {
+  @include m.when(motion, paused) {
+    &,
+    *,
+    *::before,
+    *::after {
+      animation-play-state: paused;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .polis,
+  .polis *,
+  .polis *::before,
+  .polis *::after {
+    animation-play-state: paused;
+  }
+
+  .camera {
+    transition-duration: 0s;
+  }
+}
