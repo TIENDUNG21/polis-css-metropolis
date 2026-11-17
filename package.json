@@ -21,7 +21,9 @@
     "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run check:dist && npm run lint:html",
     "test:e2e": "node tools/build.js && playwright test",
     "serve": "node tools/serve.js --port 5180",
-    "screenshots": "node tools/screenshots.js"
+    "screenshots": "node tools/screenshots.js",
+    "stats": "node tools/stats.js",
+    "measure": "node tools/measure.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
