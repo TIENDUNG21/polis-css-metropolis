@@ -17,6 +17,7 @@
 @use 'systems/daynight/shadows';
 @use 'systems/weather/state' as weather-state;
 @use 'systems/weather/precipitation';
+@use 'systems/weather/atmosphere';
 @use 'systems/transitions';
 @use 'systems/camera/presets';
 @use 'ui/masthead';

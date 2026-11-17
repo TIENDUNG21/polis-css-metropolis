@@ -1,0 +1,165 @@
+// Fog, clouds and wet streets.
+// Fog is three translucent planes inside the 3D world at different heights,
+// so it really sits between the buildings. Each plane is masked to a soft
+// ellipse (static) and holds a drifting texture (transform only).
+@use '../../core/mixins' as m;
+
+$haze: #c9cfd4;
+$night-ink: #0a1324;
+
+@keyframes fog-drift {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-320px);
+  }
+}
+
+// Every ellipse fits inside its repeating tile (centre +/- radius stays in
+// the tile), otherwise the tile edge shows as a hard seam.
+
+.fog {
+  position: absolute;
+  inset: -80px;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 45%, transparent 72%);
+  transition: visibility 3s;
+}
+
+.fog__drift {
+  position: absolute;
+  inset: 0 -320px 0 0;
+  background-image:
+    radial-gradient(ellipse 120px 60px at 140px 80px, var(--fog-colour), transparent),
+    radial-gradient(ellipse 110px 70px at 200px 230px, var(--fog-colour), transparent),
+    radial-gradient(ellipse 90px 38px at 92px 300px, var(--fog-colour), transparent);
+  background-size: 320px 340px;
+  animation: fog-drift 48s linear infinite;
+  animation-play-state: paused;
+}
+
+.fog--low {
+  transform: translateZ(8px);
+  opacity: calc(var(--fog) * 0.75);
+}
+
+.fog--mid {
+  transform: translateZ(34px);
+  opacity: calc(var(--fog) * 0.55);
+
+  .fog__drift {
+    animation-duration: 72s;
+    animation-direction: reverse;
+  }
+}
+
+.fog--high {
+  transform: translateZ(80px);
+  opacity: calc(var(--fog) * 0.4);
+
+  .fog__drift {
+    animation-duration: 96s;
+  }
+}
+
+.world {
+  --fog-colour: color-mix(in oklab, rgb(214 220 226 / 70%), rgb(30 40 58 / 70%) calc(var(--night) * 85%));
+}
+
+// A flat haze over the whole stage lowers contrast in thick fog.
+.weather__haze {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, rgb(201 207 212 / 25%), rgb(10 19 36 / 30%) calc(var(--night) * 90%)),
+    color-mix(in oklab, rgb(201 207 212 / 60%), rgb(10 19 36 / 50%) calc(var(--night) * 90%))
+  );
+  opacity: calc(var(--fog) * 0.85);
+}
+
+// Overcast sky and slow clouds.
+@keyframes cloud-drift {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-720px);
+  }
+}
+
+.sky__overcast {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, #6c757d, #{$night-ink} calc(var(--night) * 85%)),
+    color-mix(in oklab, #a7aeb4, #{$night-ink} calc(var(--night) * 80%))
+  );
+  opacity: calc(var(--cloud) * 0.8);
+}
+
+.sky__clouds {
+  position: absolute;
+  inset: 0 -720px 45% 0;
+  background-image:
+    radial-gradient(ellipse 170px 45px at 190px 70px, var(--cloud-colour), transparent),
+    radial-gradient(ellipse 200px 60px at 480px 170px, var(--cloud-colour), transparent),
+    radial-gradient(ellipse 110px 35px at 600px 50px, var(--cloud-colour), transparent);
+  background-size: 720px 260px;
+  opacity: var(--cloud);
+  animation: cloud-drift 160s linear infinite;
+}
+
+.sky {
+  --cloud-colour: color-mix(in oklab, rgb(232 236 240 / 65%), rgb(40 50 68 / 70%) calc(var(--night) * 85%));
+}
+
+// Wet ground: a cool sheen on the asphalt and darker pavements.
+.land::after,
+.block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateZ(0.1px);
+  pointer-events: none;
+}
+
+.land::after {
+  background: linear-gradient(160deg, rgb(160 185 205 / 30%), rgb(15 25 35 / 35%) 60%, rgb(160 185 205 / 20%));
+  opacity: var(--wet);
+}
+
+.block::after {
+  background: rgb(22 32 44);
+  opacity: calc(var(--wet) * 0.24);
+}
+
+.polis {
+  @include m.when(weather, rain) {
+    .fog {
+      visibility: visible;
+    }
+  }
+
+  @include m.when(weather, snow) {
+    .fog {
+      visibility: visible;
+    }
+  }
+
+  @include m.when(weather, fog) {
+    .fog {
+      visibility: visible;
+    }
+
+    .fog__drift {
+      animation-play-state: running;
+    }
+  }
+}
