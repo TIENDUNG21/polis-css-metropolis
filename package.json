@@ -13,7 +13,9 @@
     "lint": "npm run lint:css && npm run lint:js",
     "lint:css": "stylelint \"scss/**/*.scss\"",
     "lint:js": "eslint .",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "check:dist": "node tools/check-dist.js dist",
+    "test": "node --test \"tests/unit/*.test.js\""
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
