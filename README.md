@@ -7,6 +7,8 @@ A 3D city diorama with a day and night cycle, weather, camera presets and traffi
 [![CI](https://github.com/TIENDUNG21/polis-css-metropolis/actions/workflows/ci.yml/badge.svg)](https://github.com/TIENDUNG21/polis-css-metropolis/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-ff9e64.svg)](LICENSE)
 
+<p align="center"><img src="assets/banner.svg" width="100%" alt="Animated diagram: the city turns from day to night and the windows light up"></p>
+
 **Live:** https://tiendung21.github.io/polis-css-metropolis/
 
 ![Polis at dusk, isometric camera](docs/screenshots/dusk.webp)
