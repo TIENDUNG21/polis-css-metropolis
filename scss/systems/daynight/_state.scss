@@ -25,12 +25,10 @@ $opens-at: 15; // hour shown when the page loads
     --sky-dawn: 0;
     --sky-day: 0;
     --sky-dusk: 0;
-    --sun-height: 0;
   }
 
   0% {
     --sun-turn: 180deg;
-    --sun-x: 0;
   }
 
   #{at(6)} {
@@ -38,8 +36,6 @@ $opens-at: 15; // hour shown when the page loads
     --lights: 0.5;
     --sky-night: 0;
     --sky-dawn: 1;
-    --sun-x: 1;
-    --sun-height: 0.05;
   }
 
   #{at(7.5)},
@@ -52,8 +48,6 @@ $opens-at: 15; // hour shown when the page loads
   }
 
   #{at(12)} {
-    --sun-x: 0;
-    --sun-height: 1;
   }
 
   #{at(18)} {
@@ -61,8 +55,6 @@ $opens-at: 15; // hour shown when the page loads
     --lights: 0.65;
     --sky-day: 0;
     --sky-dusk: 1;
-    --sun-x: -1;
-    --sun-height: 0.05;
   }
 
   #{at(19.5)},
@@ -71,12 +63,41 @@ $opens-at: 15; // hour shown when the page loads
     --lights: 1;
     --sky-dusk: 0;
     --sky-night: 1;
-    --sun-height: 0;
   }
 
   100% {
     --sun-turn: -180deg;
+  }
+}
+
+// The sun's side and height drive wall shading and shadows on every
+// building, so a smooth animation would repaint the whole city each frame.
+// They move in one-second steps (15 in-game minutes) instead; the
+// difference between two steps is too small to see.
+@keyframes polis-sun {
+  0% {
     --sun-x: 0;
+    --sun-height: 0;
+  }
+
+  #{at(6)} {
+    --sun-x: 1;
+    --sun-height: 0.05;
+  }
+
+  #{at(12)} {
+    --sun-x: 0;
+    --sun-height: 1;
+  }
+
+  #{at(18)} {
+    --sun-x: -1;
+    --sun-height: 0.05;
+  }
+
+  100% {
+    --sun-x: 0;
+    --sun-height: 0;
   }
 }
 
@@ -135,6 +156,7 @@ $opens-at: 15; // hour shown when the page loads
 
   animation:
     polis-day $cycle linear infinite,
+    polis-sun $cycle steps(24, end) infinite,
     polis-hours $cycle steps(24, end) infinite,
     polis-minutes $hour steps(4, end) infinite;
   animation-delay: -$hour * $opens-at;

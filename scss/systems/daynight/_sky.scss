@@ -59,6 +59,7 @@
   width: 0;
   height: 0;
   rotate: var(--sun-turn);
+  will-change: rotate;
 }
 
 .sky__sun,

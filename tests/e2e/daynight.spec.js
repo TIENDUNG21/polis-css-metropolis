@@ -47,7 +47,7 @@ async function hudClock(page) {
   return text.join('');
 }
 
-test('auto mode runs the day, the clock and the minutes from .polis, opening at 15:00', async ({ page }) => {
+test('auto mode runs the day, the sun, the clock and the minutes from .polis, opening at 15:00', async ({ page }) => {
   await page.goto('./');
   const names = await page.evaluate(() =>
     document
@@ -56,9 +56,21 @@ test('auto mode runs the day, the clock and the minutes from .polis, opening at 
       .map((a) => /** @type {CSSAnimation} */ (a).animationName)
       .sort(),
   );
-  expect(names).toEqual(['polis-day', 'polis-hours', 'polis-minutes']);
+  expect(names).toEqual(['polis-day', 'polis-hours', 'polis-minutes', 'polis-sun']);
   expect(await worldState(page, ['hour'])).toEqual({ hour: 15 });
   expect(await hudClock(page)).toBe('15:00');
+});
+
+test('the sun moves in one-second steps, so walls repaint once a second, not every frame', async ({ page }) => {
+  await page.goto('./');
+  const easing = await page.evaluate(() => {
+    const sun = document
+      .querySelector('.polis')
+      ?.getAnimations()
+      .find((a) => /** @type {CSSAnimation} */ (a).animationName === 'polis-sun');
+    return sun?.effect instanceof KeyframeEffect ? sun.effect.getKeyframes()[0]?.easing : undefined;
+  });
+  expect(easing).toMatch(/^steps\(24(, end)?\)$/);
 });
 
 test('time advances one hour every four seconds in auto mode', async ({ page }) => {
