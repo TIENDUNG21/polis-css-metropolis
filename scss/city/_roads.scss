@@ -1,0 +1,55 @@
+// Road markings. The asphalt is the land itself (roads are the gaps between
+// blocks); these planes only carry paint, a little above the bridge deck.
+@use '../core/tokens' as t;
+@use '../core/functions' as f;
+
+$paint: rgb(236 230 214 / 85%);
+$dash: 14px;
+$gap: 10px;
+
+.road {
+  position: absolute;
+  transform: translateZ(0.8px);
+  pointer-events: none;
+}
+
+// Avenue A: east-west across the whole world, over the bridge.
+.road--a {
+  top: f.tiles(t.$avenue-a-y);
+  left: 0;
+  width: t.$world-w;
+  height: f.tiles(t.$avenue-a-d);
+  background:
+    repeating-linear-gradient(to right, $paint 0 $dash, transparent $dash $dash + $gap) 0 50% / 100% 2px no-repeat,
+    linear-gradient($paint, $paint) 0 3px / 100% 1px no-repeat,
+    linear-gradient($paint, $paint) 0 calc(100% - 3px) / 100% 1px no-repeat;
+}
+
+// Avenue B: north-south on the west bank.
+.road--b {
+  top: 0;
+  left: f.tiles(t.$avenue-b-x);
+  width: f.tiles(t.$avenue-b-w);
+  height: t.$world-d;
+  background:
+    repeating-linear-gradient(to bottom, $paint 0 $dash, transparent $dash $dash + $gap) 50% 0 / 2px 100% no-repeat,
+    linear-gradient($paint, $paint) 3px 0 / 1px 100% no-repeat,
+    linear-gradient($paint, $paint) calc(100% - 3px) 0 / 1px 100% no-repeat;
+}
+
+// The junction clears the lane paint and draws four zebra crossings.
+.junction {
+  position: absolute;
+  top: f.tiles(t.$avenue-a-y - 1);
+  left: f.tiles(t.$avenue-b-x - 1);
+  width: f.tiles(t.$avenue-b-w + 2);
+  height: f.tiles(t.$avenue-a-d + 2);
+  transform: translateZ(1.1px);
+  pointer-events: none;
+  background:
+    linear-gradient(#3d4046, #3d4046) 50% 50% / #{f.tiles(t.$avenue-b-w)} #{f.tiles(t.$avenue-a-d)} no-repeat,
+    repeating-linear-gradient(to right, $paint 0 3px, transparent 3px 6px) 50% 0 / #{f.tiles(t.$avenue-b-w)} 14px no-repeat,
+    repeating-linear-gradient(to right, $paint 0 3px, transparent 3px 6px) 50% 100% / #{f.tiles(t.$avenue-b-w)} 14px no-repeat,
+    repeating-linear-gradient(to bottom, $paint 0 3px, transparent 3px 6px) 0 50% / 14px #{f.tiles(t.$avenue-a-d)} no-repeat,
+    repeating-linear-gradient(to bottom, $paint 0 3px, transparent 3px 6px) 100% 50% / 14px #{f.tiles(t.$avenue-a-d)} no-repeat;
+}
