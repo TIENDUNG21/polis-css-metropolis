@@ -38,3 +38,19 @@
   color: rgb(237 237 237 / 72%);
   font-size: 0.9rem;
 }
+
+@media (width <= 640px) {
+  .masthead {
+    top: 12px;
+    left: 12px;
+    padding: 8px 12px;
+  }
+
+  .masthead__name {
+    font-size: 1rem;
+  }
+
+  .masthead__tagline {
+    display: none;
+  }
+}

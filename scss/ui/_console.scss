@@ -68,3 +68,29 @@
   background: rgb(255 158 100 / 14%);
   color: t.$paper;
 }
+
+// The input is visually hidden, so its label shows keyboard focus.
+.control__option:has(.control__input:focus-visible) {
+  outline: 2px solid t.$accent;
+  outline-offset: 2px;
+}
+
+@media (width <= 640px) {
+  .console {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  .control {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .control__option {
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+}

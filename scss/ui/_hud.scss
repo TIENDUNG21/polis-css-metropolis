@@ -27,6 +27,23 @@
   letter-spacing: 0.02em;
 }
 
+@media (width <= 640px) {
+  .hud {
+    top: 12px;
+    right: 12px;
+    padding: 6px 10px;
+  }
+
+  .hud__clock::before {
+    font-size: 1.15rem;
+  }
+
+  .hud__mode,
+  .hud__weather {
+    display: none;
+  }
+}
+
 .hud__mode {
   color: t.$muted;
   font-family: t.$font-mono;

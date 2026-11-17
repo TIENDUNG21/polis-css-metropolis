@@ -29,7 +29,7 @@
 .camera {
   position: absolute;
   top: 54%;
-  left: 50%;
+  left: calc(50% + var(--stage-shift, 0px));
   transform-style: preserve-3d;
   transform: translateY(var(--cam-lift)) rotateX(var(--cam-tilt)) rotateZ(var(--cam-spin))
     scale3d(
@@ -39,6 +39,11 @@
     )
     translate3d(calc(var(--cam-focus-x) * -1), calc(var(--cam-focus-y) * -1), 0);
   transition: transform t.$camera-time t.$ease-camera;
+
+  // On phones the console covers the lower part of the stage.
+  @media (width <= 640px) {
+    top: 40%;
+  }
 }
 
 .world {
