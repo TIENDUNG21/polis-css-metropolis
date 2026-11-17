@@ -24,10 +24,12 @@ const port = Number(option('--port', '5182'));
 
 /** @type {Array<[string, string]>} */
 const README_SET = [
-  ['hero', 'motion=paused,time=dusk,weather=clear,camera=iso'],
-  ['night-rain', 'motion=paused,time=night,weather=rain,camera=river'],
-  ['snow-day', 'motion=paused,time=day,weather=snow,camera=aerial'],
-  ['street-fog', 'motion=paused,time=dawn,weather=fog,camera=street'],
+  ['dusk', 'motion=paused,time=dusk,weather=clear,camera=iso'],
+  ['night-street', 'motion=paused,time=night,weather=clear,camera=street'],
+  ['snow', 'motion=paused,time=day,weather=snow,camera=iso'],
+  ['rain-river', 'motion=paused,time=night,weather=rain,camera=river'],
+  ['fog-dawn', 'motion=paused,time=dawn,weather=fog,camera=aerial'],
+  ['plan', 'motion=paused,time=day,weather=clear,camera=plan'],
 ];
 const shots = args.length > 0 ? args.map((a) => /** @type {[string, string]} */ (a.split(':', 2))) : README_SET;
 

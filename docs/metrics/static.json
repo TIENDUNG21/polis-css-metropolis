@@ -1,0 +1,107 @@
+{
+  "html": {
+    "bytes": 46891,
+    "gzip": 4531,
+    "brotli": 3614
+  },
+  "css": {
+    "bytes": 55560,
+    "gzip": 9088,
+    "brotli": 7841
+  },
+  "elements": 772,
+  "city": {
+    "block": 6,
+    "bldg": 63,
+    "bldg__wall": 189,
+    "tree": 38,
+    "lamp": 24,
+    "car": 14,
+    "feature": 10
+  },
+  "keyframes": [
+    {
+      "name": "drive",
+      "properties": [
+        "offset-distance",
+        "transform"
+      ]
+    },
+    {
+      "name": "sail",
+      "properties": [
+        "scale",
+        "translate"
+      ]
+    },
+    {
+      "name": "polis-day",
+      "properties": [
+        "--lights",
+        "--night",
+        "--sky-dawn",
+        "--sky-day",
+        "--sky-dusk",
+        "--sky-night",
+        "--sun-turn"
+      ]
+    },
+    {
+      "name": "polis-sun",
+      "properties": [
+        "--sun-height",
+        "--sun-x"
+      ]
+    },
+    {
+      "name": "polis-hours",
+      "properties": [
+        "--hour"
+      ]
+    },
+    {
+      "name": "polis-minutes",
+      "properties": [
+        "--minute"
+      ]
+    },
+    {
+      "name": "rain-far",
+      "properties": [
+        "transform"
+      ]
+    },
+    {
+      "name": "rain-near",
+      "properties": [
+        "transform"
+      ]
+    },
+    {
+      "name": "snow-far",
+      "properties": [
+        "transform"
+      ]
+    },
+    {
+      "name": "snow-near",
+      "properties": [
+        "transform"
+      ]
+    },
+    {
+      "name": "fog-drift",
+      "properties": [
+        "transform"
+      ]
+    },
+    {
+      "name": "cloud-drift",
+      "properties": [
+        "transform"
+      ]
+    }
+  ],
+  "registeredProperties": 20,
+  "auditProblems": []
+}
