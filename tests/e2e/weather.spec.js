@@ -33,7 +33,7 @@ test('clear weather leaves every weather property at zero and every layer off', 
 test('rain falls, wets the streets and thickens the clouds', async ({ page }) => {
   await page.goto('./');
   await applyState(page, [['weather', 'rain']]);
-  expect(await weather(page)).toEqual({ cloud: 0.85, rain: 1, snowfall: 0, wet: 1, snow: 0, fog: 0.15 });
+  expect(await weather(page)).toEqual({ cloud: 0.85, rain: 1, snowfall: 0, wet: 1, snow: 0, fog: 0 });
   expect(await layers(page)).toEqual({
     'rain rain--far': 'visible/running',
     'rain rain--near': 'visible/running',

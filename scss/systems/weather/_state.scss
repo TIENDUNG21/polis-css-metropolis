@@ -8,14 +8,12 @@
     --cloud: 0.85;
     --rain: 1;
     --wet: 1;
-    --fog: 0.15;
   }
 
   @include m.when(weather, snow) {
     --cloud: 0.6;
     --snowfall: 1;
     --snow: 1;
-    --fog: 0.1;
   }
 
   @include m.when(weather, fog) {

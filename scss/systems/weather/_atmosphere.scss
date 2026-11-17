@@ -140,19 +140,9 @@ $night-ink: #0a1324;
   opacity: calc(var(--wet) * 0.24);
 }
 
+// Only thick fog shows the planes: they intersect every tall building, and
+// the browser re-sorts that geometry every frame while traffic moves.
 .polis {
-  @include m.when(weather, rain) {
-    .fog {
-      visibility: visible;
-    }
-  }
-
-  @include m.when(weather, snow) {
-    .fog {
-      visibility: visible;
-    }
-  }
-
   @include m.when(weather, fog) {
     .fog {
       visibility: visible;
