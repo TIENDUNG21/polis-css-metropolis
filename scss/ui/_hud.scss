@@ -1,0 +1,50 @@
+// The HUD shows the simulated time. --hour and --minute are registered
+// integers animated by the day cycle; CSS counters print them.
+@use '../core/tokens' as t;
+@use '../core/mixins' as m;
+
+.hud {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 3;
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid t.$hairline;
+  border-radius: 12px;
+  background: t.$panel;
+  pointer-events: none;
+}
+
+.hud__clock::before {
+  counter-reset: hour var(--hour) minute var(--minute);
+  content: counter(hour, decimal-leading-zero) ':' counter(minute, decimal-leading-zero);
+  font-family: t.$font-mono;
+  font-size: 1.6rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.hud__mode {
+  color: t.$muted;
+  font-family: t.$font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  &::before {
+    content: 'Auto: one day every 96 s';
+  }
+}
+
+.polis {
+  @each $preset, $label in (dawn: 'Dawn', day: 'Midday', dusk: 'Dusk', night: 'Night') {
+    @include m.when(time, $preset) {
+      .hud__mode::before {
+        content: '#{$label}';
+      }
+    }
+  }
+}
