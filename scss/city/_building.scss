@@ -1,0 +1,360 @@
+// Buildings: a preserve-3d box per <polis-building>. Footprint and height
+// come from the HTML (--x --y --w --d in tiles, --h in floors). Only the
+// south, east and west walls exist: the camera never looks from the north.
+// Every face has two pseudo-elements:
+//   ::before  light: orientation shading by day, blue ink at night
+//   ::after   lit windows (night) on walls, snow cover on roofs
+// Windows are gradients, never DOM: one element per wall whatever its size.
+@use 'sass:map';
+@use 'sass:math';
+@use '../core/tokens' as t;
+@use '../core/functions' as f;
+@use '../core/mixins' as m;
+
+$night-ink: #0a1324;
+$window-light: #ffd27a;
+
+// Window geometry per facade style: column period and window width along
+// the wall, floor period with sill and head heights measured from the floor.
+$styles: (
+  curtain: (col: 6px, win: 5px, sill: 1px, head: 7px),
+  ribbon: (col: 6px, win: 6px, sill: 3px, head: 6.5px),
+  punched: (col: 6px, win: 3px, sill: 2px, head: 5.5px),
+  house: (col: 9px, win: 4px, sill: 2px, head: 5px),
+  slit: (col: 7px, win: 2px, sill: 1px, head: 6.5px),
+  shed: (col: 14px, win: 0px, sill: 0px, head: 0px),
+);
+
+// Colours per kind. `trim` draws mullions/spandrels/walls around windows.
+$kinds: (
+  glass: (style: curtain, trim: #4f6474, glass: #8fb2c8, roof: #59646d),
+  office: (style: ribbon, trim: #d3cabb, glass: #4c6276, roof: #8a847a),
+  brick: (style: punched, trim: #a35a41, glass: #36434f, roof: #6c5a4f),
+  apartment: (style: punched, trim: #dccaa6, glass: #45535f, roof: #978c7b),
+  house: (style: house, trim: #e7d8bd, glass: #45535f, roof: #ab5539),
+  warehouse: (style: shed, trim: #8c939a, glass: #8c939a, roof: #686e74),
+  landmark: (style: slit, trim: #ebe3d4, glass: #3d4c60, roof: #d8cebb),
+  container: (style: shed, trim: #b65a3c, glass: #b65a3c, roof: #a9533a),
+);
+
+/// Facade gradients. $up runs from the ground to the roof, $along runs along
+/// the wall; repeating gradients start at the ground edge, so floors line up
+/// with the street whatever the height.
+@mixin facade($style, $trim, $glass, $up, $along) {
+  $g: map.get($styles, $style);
+  $col: map.get($g, col);
+  $win: map.get($g, win);
+  $a: math.div($col - $win, 2);
+  $b: $a + $win;
+  $sill: map.get($g, sill);
+  $head: map.get($g, head);
+
+  @if $style == shed {
+    background:
+      linear-gradient(#{$up}, rgb(0 0 0 / 18%), transparent 4px),
+      repeating-linear-gradient(#{$along}, rgb(0 0 0 / 0%) 0 2px, rgb(0 0 0 / 14%) 2px 3px),
+      $trim;
+  } @else if $style == curtain {
+    background:
+      linear-gradient(#{$up}, rgb(255 255 255 / 0%) 40%, rgb(255 255 255 / 22%)),
+      repeating-linear-gradient(#{$along}, $trim 0 1px, transparent 1px $col),
+      repeating-linear-gradient(#{$up}, $trim 0 $sill, transparent $sill t.$floor),
+      $glass;
+  } @else {
+    background:
+      repeating-linear-gradient(#{$along}, $trim 0 $a, transparent $a $b, $trim $b $col),
+      repeating-linear-gradient(#{$up}, $trim 0 $sill, transparent $sill $head, $trim $head t.$floor),
+      $glass;
+  }
+}
+
+/// Mask that keeps only some window cells: the window grid intersected
+/// with a pseudo-random pattern (two coprime stripe periods, XOR-ed),
+/// shifted per building by --seed.
+@mixin lit-windows($style, $up, $along) {
+  $g: map.get($styles, $style);
+  $col: map.get($g, col);
+  $win: map.get($g, win);
+  $a: math.div($col - $win, 2);
+  $b: $a + $win;
+  $sill: map.get($g, sill);
+  $head: map.get($g, head);
+
+  @if $style == shed {
+    display: none;
+  } @else {
+    background: $window-light;
+    mask-image:
+      repeating-linear-gradient(#{$along}, transparent 0 $a, #000 $a $b, transparent $b $col),
+      repeating-linear-gradient(#{$up}, transparent 0 $sill, #000 $sill $head, transparent $head t.$floor),
+      repeating-linear-gradient(#{$along}, #000 0 $col * 2, transparent $col * 2 $col * 5),
+      repeating-linear-gradient(#{$up}, #000 0 t.$floor * 2, transparent t.$floor * 2 t.$floor * 3);
+    mask-composite: intersect, intersect, exclude;
+    mask-position:
+      0 0,
+      0 0,
+      calc(var(--seed) * #{$col}) calc(var(--seed) * #{$col}),
+      calc(var(--seed) * #{t.$floor * 2}) calc(var(--seed) * #{t.$floor});
+  }
+}
+
+.bldg {
+  --bh: #{f.height-var()};
+
+  position: absolute;
+  top: f.tile-var(y);
+  left: f.tile-var(x);
+  width: f.tile-var(w);
+  height: f.tile-var(d);
+  transform-style: preserve-3d;
+}
+
+.bldg__wall,
+.bldg__roof,
+.bldg__slope,
+.bldg__gable {
+  @include m.face;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  // Light: orientation shade by day; deep blue at night.
+  &::before {
+    background: $night-ink;
+    opacity: calc(var(--face-shade) + (1 - var(--face-shade)) * var(--night) * 0.8);
+  }
+}
+
+.bldg__roof {
+  --face-shade: 0;
+
+  inset: 0;
+  transform: translateZ(var(--bh));
+  box-shadow: inset 0 0 0 1.5px rgb(0 0 0 / 22%);
+
+  // Snow settles on roofs.
+  &::after {
+    background: #f4f6f8;
+    opacity: calc(var(--snow) * 0.92);
+  }
+}
+
+.bldg__wall {
+  // Lit windows switch on one building at a time as --lights rises,
+  // in an order given by --seed.
+  &::after {
+    opacity: clamp(0, (var(--lights) - var(--seed) * 0.08) * 6, 1);
+  }
+}
+
+.bldg__wall--s {
+  --face-shade: var(--shade-s);
+
+  top: calc(100% - var(--bh));
+  left: 0;
+  width: 100%;
+  height: var(--bh);
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+}
+
+.bldg__wall--e {
+  --face-shade: var(--shade-e);
+
+  top: 0;
+  left: calc(100% - var(--bh));
+  width: var(--bh);
+  height: 100%;
+  transform-origin: right;
+  transform: rotateY(90deg);
+}
+
+.bldg__wall--w {
+  --face-shade: var(--shade-w);
+
+  top: 0;
+  left: 0;
+  width: var(--bh);
+  height: 100%;
+  transform-origin: left;
+  transform: rotateY(-90deg);
+}
+
+@each $kind, $c in $kinds {
+  $style: map.get($c, style);
+  $trim: map.get($c, trim);
+  $glass: map.get($c, glass);
+
+  .bldg--#{$kind} {
+    .bldg__roof {
+      background-color: map.get($c, roof);
+    }
+
+    .bldg__wall--s {
+      @include facade($style, $trim, $glass, 'to top', 'to right');
+
+      &::after {
+        @include lit-windows($style, 'to top', 'to right');
+      }
+    }
+
+    .bldg__wall--e {
+      @include facade($style, $trim, $glass, 'to left', 'to bottom');
+
+      &::after {
+        @include lit-windows($style, 'to left', 'to bottom');
+      }
+    }
+
+    .bldg__wall--w {
+      @include facade($style, $trim, $glass, 'to right', 'to bottom');
+
+      &::after {
+        @include lit-windows($style, 'to right', 'to bottom');
+      }
+    }
+  }
+}
+
+// Containers take a muted paint from their seed (hues 26 to 202 degrees:
+// rust, ochre, olive, green, teal; never violet).
+.bldg--container {
+  --paint: hsl(calc(var(--seed) * 22deg + 4deg) 42% 44%);
+
+  .bldg__wall {
+    background-color: var(--paint);
+  }
+
+  .bldg__roof {
+    background-color: var(--paint);
+  }
+}
+
+// Roof details.
+.bldg__roof--garden {
+  background-image: radial-gradient(circle, #5f8d45 0 3px, transparent 3.5px), linear-gradient(#7aa35a, #6b9550);
+  background-size: 9px 9px, 100% 100%;
+}
+
+.bldg__roof--helipad {
+  background-image:
+    radial-gradient(circle, transparent 0 7px, #f1e9d8 7px 8.5px, transparent 9px),
+    linear-gradient(90deg, transparent 46%, #f1e9d8 46% 54%, transparent 54%);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%, 12px 9px;
+}
+
+// Spires and antennas: two crossed vertical planes on the roof.
+.bldg__spire,
+.bldg__antenna {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  transform: translateZ(var(--bh));
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    transform-origin: bottom;
+  }
+
+  &::before {
+    transform: rotateX(-90deg);
+  }
+
+  &::after {
+    transform: rotateZ(90deg) rotateX(-90deg);
+  }
+}
+
+.bldg__spire {
+  &::before,
+  &::after {
+    left: -9px;
+    width: 18px;
+    height: 70px;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    background: linear-gradient(to top, #cfc5b2, #f2ebde 70%, t.$accent 70% 74%, #f2ebde 74%);
+  }
+}
+
+.bldg__antenna {
+  &::before,
+  &::after {
+    left: -1px;
+    width: 2px;
+    height: 34px;
+    background: linear-gradient(to top, #6b737a, #9aa3ab);
+  }
+}
+
+// Gable roofs: two slopes and two triangular ends above the flat roof.
+// The ridge runs east-west along the middle of the footprint.
+.bldg {
+  --pitch: 34deg;
+  --rise: calc(var(--d) * #{t.$tile} * 0.5 * 0.6745); // tan(34deg) * half depth
+}
+
+.bldg__slope {
+  left: 0;
+  width: 100%;
+  height: calc(var(--d) * #{t.$tile} * 0.5 / 0.829); // half depth / cos(34deg)
+  background: var(--roof-tile, #ab5539);
+  background-image: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0%) 0 3px, rgb(0 0 0 / 16%) 3px 4px);
+  backface-visibility: visible;
+
+  &::after {
+    background: #f4f6f8;
+    opacity: calc(var(--snow) * 0.9);
+  }
+}
+
+.bldg__slope--s {
+  --face-shade: 0.04;
+
+  bottom: 0;
+  transform-origin: bottom;
+  transform: translateZ(var(--bh)) rotateX(calc(-1 * var(--pitch)));
+}
+
+.bldg__slope--n {
+  --face-shade: 0.24;
+
+  top: 0;
+  transform-origin: top;
+  transform: translateZ(var(--bh)) rotateX(var(--pitch));
+}
+
+.bldg__gable {
+  top: 0;
+  width: var(--rise);
+  height: 100%;
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  background: #e0cfb2;
+}
+
+.bldg__gable--e {
+  --face-shade: var(--shade-e);
+
+  right: 0;
+  transform-origin: right;
+  transform: translateZ(var(--bh)) rotateY(90deg);
+}
+
+.bldg__gable--w {
+  --face-shade: var(--shade-w);
+
+  left: 0;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform-origin: left;
+  transform: translateZ(var(--bh)) rotateY(-90deg);
+}

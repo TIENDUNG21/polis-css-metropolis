@@ -1,11 +1,13 @@
 // Polis CSS Metropolis: entry point. Partials are grouped by system:
-// core (tokens, helpers), city (geometry), systems (state that changes),
-// ui (page chrome and controls).
+// core (tokens, helpers, world state), city (geometry), systems (state
+// that changes), ui (page chrome and controls).
+@use 'core/properties';
 @use 'core/base';
 @use 'city/stage';
 @use 'city/land';
 @use 'city/river';
 @use 'city/block';
+@use 'city/building';
 @use 'systems/camera/presets';
 @use 'ui/masthead';
 @use 'ui/console';

@@ -1,0 +1,41 @@
+// World state. These registered custom properties are the only values the
+// systems share: the console (radios + :has()) and the day cycle animation
+// write them on .polis; sky, faces, lights, weather and the HUD read them.
+// Registering them gives each a type, so they can transition and animate.
+
+@property --night {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --lights {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --snow {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+// Orientation shading of walls (0 = fully lit). East and west follow the sun.
+@property --shade-s {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.1;
+}
+
+@property --shade-e {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.34;
+}
+
+@property --shade-w {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.2;
+}

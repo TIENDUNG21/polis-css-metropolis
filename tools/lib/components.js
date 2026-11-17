@@ -12,7 +12,7 @@ import { scanTags } from './markup.js';
 export const WORLD = Object.freeze({ cols: 60, rows: 44 });
 
 export const BLOCK_KINDS = ['downtown', 'civic', 'oldtown', 'park', 'harbor', 'riverside', 'plaza'];
-export const BUILDING_KINDS = ['glass', 'office', 'brick', 'house', 'apartment', 'warehouse', 'landmark'];
+export const BUILDING_KINDS = ['glass', 'office', 'brick', 'house', 'apartment', 'warehouse', 'landmark', 'container'];
 export const ROOFS = ['flat', 'gable', 'spire', 'antenna', 'garden', 'helipad'];
 export const TREE_KINDS = ['round', 'pine', 'autumn'];
 /** Traffic routes; each needs an offset-path in scss/systems/traffic/_routes.scss. */
