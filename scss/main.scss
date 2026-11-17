@@ -1,25 +1,41 @@
-// Polis CSS Metropolis: entry point. Partials are grouped by system:
-// core (tokens, helpers, world state), city (geometry), systems (state
-// that changes), ui (page chrome and controls).
+// Polis CSS Metropolis: entry point.
+// Property registrations are global. Everything else is loaded into
+// cascade layers, in order of priority (last wins): base styles, the city
+// geometry, the systems that change it, and the page UI.
+@use 'sass:meta';
 @use 'core/properties';
-@use 'core/base';
-@use 'city/stage';
-@use 'city/land';
-@use 'city/river';
-@use 'city/bridge';
-@use 'city/block';
-@use 'city/building';
-@use 'city/nature';
-@use 'city/roads';
-@use 'systems/traffic/cars';
-@use 'systems/daynight/state' as daynight-state;
-@use 'systems/daynight/sky';
-@use 'systems/daynight/shadows';
-@use 'systems/weather/state' as weather-state;
-@use 'systems/weather/precipitation';
-@use 'systems/weather/atmosphere';
-@use 'systems/transitions';
-@use 'systems/camera/presets';
-@use 'ui/masthead';
-@use 'ui/console';
-@use 'ui/hud';
+@layer base, city, systems, ui;
+
+@layer base {
+  @include meta.load-css('core/base');
+}
+
+@layer city {
+  @include meta.load-css('city/stage');
+  @include meta.load-css('city/land');
+  @include meta.load-css('city/river');
+  @include meta.load-css('city/bridge');
+  @include meta.load-css('city/block');
+  @include meta.load-css('city/building');
+  @include meta.load-css('city/nature');
+  @include meta.load-css('city/roads');
+}
+
+@layer systems {
+  @include meta.load-css('systems/traffic/cars');
+  @include meta.load-css('systems/daynight/state');
+  @include meta.load-css('systems/daynight/sky');
+  @include meta.load-css('systems/daynight/shadows');
+  @include meta.load-css('systems/weather/state');
+  @include meta.load-css('systems/weather/precipitation');
+  @include meta.load-css('systems/weather/atmosphere');
+  @include meta.load-css('systems/transitions');
+  @include meta.load-css('systems/camera/presets');
+}
+
+@layer ui {
+  @include meta.load-css('ui/masthead');
+  @include meta.load-css('ui/console');
+  @include meta.load-css('ui/hud');
+}
+
