@@ -39,7 +39,27 @@
   }
 }
 
+.hud__weather {
+  color: t.$muted;
+  font-family: t.$font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  &::before {
+    content: 'Clear sky';
+  }
+}
+
 .polis {
+  @each $preset, $label in (rain: 'Rain', snow: 'Snow', fog: 'Fog') {
+    @include m.when(weather, $preset) {
+      .hud__weather::before {
+        content: '#{$label}';
+      }
+    }
+  }
+
   @each $preset, $label in (dawn: 'Dawn', day: 'Midday', dusk: 'Dusk', night: 'Night') {
     @include m.when(time, $preset) {
       .hud__mode::before {

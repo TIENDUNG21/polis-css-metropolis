@@ -116,3 +116,17 @@
   inherits: true;
   initial-value: 0;
 }
+
+// Precipitation intensity (falling particles), separate from what it
+// leaves behind (--wet, --snow), which builds up and fades more slowly.
+@property --rain {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --snowfall {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}

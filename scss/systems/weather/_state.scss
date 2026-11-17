@@ -1,0 +1,26 @@
+// Weather presets. Each writes the weather properties on .polis; the
+// transitions give each its own pace: rain wets the streets in 3 s, snow
+// settles over 6 s and melts as slowly when the sky clears.
+@use '../../core/mixins' as m;
+
+.polis {
+  @include m.when(weather, rain) {
+    --cloud: 0.85;
+    --rain: 1;
+    --wet: 1;
+    --fog: 0.15;
+  }
+
+  @include m.when(weather, snow) {
+    --cloud: 0.6;
+    --snowfall: 1;
+    --snow: 1;
+    --fog: 0.1;
+  }
+
+  @include m.when(weather, fog) {
+    --cloud: 0.55;
+    --wet: 0.25;
+    --fog: 1;
+  }
+}

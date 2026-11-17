@@ -1,0 +1,136 @@
+// Rain and snow: 2D layers in front of the city. Each layer is a lattice
+// of particles drawn by radial gradients in one repeating tile; two layers
+// with different tile sizes and speeds read as random. A layer moves by
+// exactly one tile per loop (transform only), so the loop is seamless.
+// Layers are paused and hidden unless their weather is selected.
+@use 'sass:list';
+@use '../../core/mixins' as m;
+
+/// Particles at the given positions inside a $w x $h tile.
+/// @param {Length} $w
+/// @param {Length} $h
+/// @param {List} $points list of (x y) pairs inside the tile
+/// @param {String} $shape radial-gradient size, e.g. `1px 9px`
+/// @param {Color} $color
+@mixin particles($w, $h, $points, $shape, $color) {
+  $layers: ();
+
+  @each $x, $y in $points {
+    $layers: list.append($layers, radial-gradient(#{$shape} at $x $y, $color, transparent), $separator: comma);
+  }
+
+  background-image: $layers;
+  background-size: $w $h;
+}
+
+.weather {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rain,
+.snow {
+  position: absolute;
+  inset: -30% -20%;
+  visibility: hidden;
+  transition: visibility 1.5s;
+}
+
+// Rain: slanted streaks, fast.
+@keyframes rain-far {
+  from {
+    transform: rotate(12deg) translateY(0);
+  }
+
+  to {
+    transform: rotate(12deg) translateY(131px);
+  }
+}
+
+@keyframes rain-near {
+  from {
+    transform: rotate(12deg) translateY(0);
+  }
+
+  to {
+    transform: rotate(12deg) translateY(173px);
+  }
+}
+
+.rain {
+  opacity: calc(var(--rain) * 0.75);
+}
+
+.rain--far {
+  @include particles(97px, 131px, (12px 20px, 55px 74px, 83px 112px, 31px 101px), '0.6px 7px', rgb(205 220 235 / 55%));
+
+  animation: rain-far 0.55s linear infinite;
+}
+
+.rain--near {
+  @include particles(139px, 173px, (20px 30px, 96px 120px, 60px 160px), '0.9px 11px', rgb(215 228 240 / 65%));
+
+  animation: rain-near 0.42s linear infinite;
+}
+
+// Snow: round flakes drifting down and sideways with the wind.
+@keyframes snow-far {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(-89px, 127px);
+  }
+}
+
+@keyframes snow-near {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(-113px, 181px);
+  }
+}
+
+.snow {
+  opacity: var(--snowfall);
+}
+
+.snow--far {
+  @include particles(89px, 127px, (10px 14px, 52px 60px, 75px 108px, 28px 95px), 'circle 1.4px', rgb(255 255 255 / 85%));
+
+  animation: snow-far 7s linear infinite;
+}
+
+.snow--near {
+  @include particles(113px, 181px, (18px 30px, 84px 120px, 50px 166px), 'circle 2.4px', rgb(255 255 255 / 92%));
+
+  animation: snow-near 5s linear infinite;
+}
+
+// After the `animation` shorthands above, which would reset it to running.
+.rain,
+.snow {
+  animation-play-state: paused;
+}
+
+.polis {
+  @include m.when(weather, rain) {
+    .rain {
+      visibility: visible;
+      animation-play-state: running;
+    }
+  }
+
+  @include m.when(weather, snow) {
+    .snow {
+      visibility: visible;
+      animation-play-state: running;
+    }
+  }
+}
