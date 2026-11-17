@@ -19,7 +19,8 @@ export default [
     },
   },
   {
-    files: ['tests/e2e/**/*.js'],
+    // Playwright code: callbacks passed to page.evaluate run in the browser.
+    files: ['tests/e2e/**/*.js', 'tools/lib/browser.js', 'tools/screenshots.js', 'tools/measure.js'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
 ];
