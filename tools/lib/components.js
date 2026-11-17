@@ -22,12 +22,12 @@ export const ROUTES = ['a-east', 'a-west', 'b-north', 'b-south'];
  * @typedef {string | number} Value
  * @typedef {{ parse: (raw: string) => Value | undefined, describe: string }} AttrType
  * @typedef {{ type: AttrType, default?: Value }} AttrSpec
- * @typedef {{ name: string, attrs: Record<string, Value>, line: number, index: number }} Instance
+ * @typedef {{ name: string, attrs: Record<string, Value> }} Child
  * @typedef {object} Component
  * @property {Record<string, AttrSpec>} attrs
  * @property {'block' | 'world'} parent  Where the component may appear.
  * @property {boolean} container         Whether it may contain markup.
- * @property {(attrs: Record<string, Value>, inner: string) => string} render
+ * @property {(attrs: Record<string, Value>, inner: string, children: Child[]) => string} render
  */
 
 /**
@@ -96,6 +96,28 @@ function roofMarkup(roof) {
   return span(roofClass) + extras;
 }
 
+/**
+ * A block's shadows live on one flat layer that clips them to the block,
+ * so long morning and evening shadows never hang off the edge of the world.
+ * @param {Child[]} children
+ */
+function shadeLayer(children) {
+  const shadows = children
+    .filter((c) => c.name === 'polis-building')
+    .map(
+      ({ attrs: a }) =>
+        `<span class="shade" style="${style([
+          ['x', a.x ?? 0],
+          ['y', a.y ?? 0],
+          ['w', a.w ?? 1],
+          ['d', a.d ?? 1],
+          ['h', a.h ?? 1],
+        ])}"></span>`,
+    )
+    .join('');
+  return shadows ? `<div class="block__shade">${shadows}</div>` : '';
+}
+
 /** @type {Record<string, Component>} */
 export const COMPONENTS = {
   'polis-block': {
@@ -108,13 +130,13 @@ export const COMPONENTS = {
       d: { type: int(1, WORLD.rows) },
       kind: { type: oneOf(BLOCK_KINDS) },
     },
-    render: (a, inner) =>
+    render: (a, inner, children) =>
       `<div class="block block--${a.kind}" style="${style([
         ['x', a.x ?? 0],
         ['y', a.y ?? 0],
         ['w', a.w ?? 1],
         ['d', a.d ?? 1],
-      ])}">${inner}</div>`,
+      ])}">${shadeLayer(children)}${inner}</div>`,
   },
   'polis-building': {
     parent: 'block',
@@ -138,7 +160,6 @@ export const COMPONENTS = {
         ['h', a.h ?? 1],
         ['seed', a.seed ?? 0],
       ])}">` +
-      span('bldg__shadow') +
       span('bldg__wall bldg__wall--s') +
       span('bldg__wall bldg__wall--e') +
       span('bldg__wall bldg__wall--w') +
@@ -368,7 +389,11 @@ export function expandComponents(html, file) {
     if (!spec.container && inner.trim() !== '') {
       throw new BuildError(`<${node.name}> cannot have content`, at(node.start));
     }
-    return spec.render(node.attrs, inner);
+    return spec.render(
+      node.attrs,
+      inner,
+      node.children.map((c) => ({ name: c.name, attrs: c.attrs })),
+    );
   };
 
   return renderRange(0, html.length, roots);

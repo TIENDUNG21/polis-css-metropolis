@@ -38,14 +38,31 @@ describe('expandComponents: output', () => {
     assert.equal(
       out,
       '<div class="block block--downtown" style="--x:1;--y:2;--w:10;--d:8">' +
+        '<div class="block__shade"><span class="shade" style="--x:0;--y:1;--w:3;--d:2;--h:12"></span></div>' +
         '<div class="bldg bldg--glass" style="--x:0;--y:1;--w:3;--d:2;--h:12;--seed:0">' +
-        '<span class="bldg__shadow"></span>' +
         '<span class="bldg__wall bldg__wall--s"></span>' +
         '<span class="bldg__wall bldg__wall--e"></span>' +
         '<span class="bldg__wall bldg__wall--w"></span>' +
         '<span class="bldg__roof"></span>' +
         '</div></div>',
     );
+  });
+
+  test('a block without buildings has no shade layer', () => {
+    const out = expandComponents('<polis-block x="0" y="0" w="4" d="4" kind="park"></polis-block>', 'a.html');
+    assert.doesNotMatch(out, /block__shade/);
+  });
+
+  test('the shade layer holds one shadow per building, in source order', () => {
+    const out = expandComponents(
+      '<polis-block x="0" y="0" w="9" d="9" kind="downtown">' +
+        '<polis-building x="0" y="0" w="2" d="2" h="5" kind="glass"/><polis-tree x="5" y="5"/>' +
+        '<polis-building x="4" y="0" w="2" d="2" h="9" kind="office"/></polis-block>',
+      'a.html',
+    );
+    const shade = out.match(/<div class="block__shade">(.*?)<\/div>/)?.[1] ?? '';
+    assert.equal((shade.match(/class="shade"/g) ?? []).length, 2);
+    assert.match(shade, /--x:0;--y:0;--w:2;--d:2;--h:5.*--x:4;--y:0;--w:2;--d:2;--h:9/);
   });
 
   test('accepts self-closing components and keeps the text around them', () => {

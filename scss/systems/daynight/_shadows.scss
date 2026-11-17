@@ -1,0 +1,38 @@
+// Building shadows. Each block has one flat shade layer (overflow hidden,
+// so shadows stop at the block edge) holding one shadow per building. A
+// shadow is the footprint sheared away from the sun: its south edge stays
+// put and its north edge moves north by the shadow length and east or west
+// by the sun's side. Length grows as the sun gets low. All terms are
+// unitless (floors, tiles) so the maths needs no length division.
+// The layer, not each shadow, carries the opacity: overlaps stay one tone.
+@use 'sass:math';
+@use '../../core/tokens' as t;
+@use '../../core/functions' as f;
+
+$floor: math.div(t.$floor, 1px);
+$tile: math.div(t.$tile, 1px);
+
+.block__shade {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform: translateZ(0.6px);
+  opacity: calc(0.34 * min(1, var(--sun-height) * 5) * (1 - var(--cloud)) * (1 - var(--night)));
+  pointer-events: none;
+}
+
+.shade {
+  // Shadow length in px (as a number) and the two shape factors.
+  --reach: calc((1.7 - 1.45 * var(--sun-height)) * var(--h) * #{$floor});
+  --stretch: calc(1 + var(--reach) * 0.5 / (var(--d) * #{$tile}));
+  --shear: atan(calc(var(--sun-x) * var(--reach) / (var(--stretch) * var(--d) * #{$tile})));
+
+  position: absolute;
+  top: f.tile-var(y);
+  left: f.tile-var(x);
+  width: f.tile-var(w);
+  height: f.tile-var(d);
+  transform-origin: bottom;
+  transform: skewX(var(--shear)) scaleY(var(--stretch));
+  background: #0c1220;
+}

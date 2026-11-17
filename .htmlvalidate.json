@@ -6,7 +6,7 @@
       {
         "include": null,
         "exclude": null,
-        "allowedProperties": ["--x", "--y", "--w", "--d", "--h", "--seed", "--delay", "--paint", "--s", "--hue"]
+        "allowedProperties": ["--x", "--y", "--w", "--d", "--h", "--seed", "--delay", "--paint", "--s"]
       }
     ]
   }
