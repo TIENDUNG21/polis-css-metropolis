@@ -47,9 +47,6 @@ $opens-at: 15; // hour shown when the page loads
     --sky-dusk: 0;
   }
 
-  #{at(12)} {
-  }
-
   #{at(18)} {
     --night: 0.3;
     --lights: 0.65;
