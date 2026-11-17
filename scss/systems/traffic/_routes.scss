@@ -1,0 +1,38 @@
+// Traffic routes, computed from the road tokens so lanes follow the roads.
+// Every route takes the same period. Each car's phase (a negative
+// animation-delay from the HTML) puts its pass through the junction in its
+// avenue's half of the cycle: avenue A owns the junction for the first 12 s,
+// avenue B for the second 12 s, so crossing traffic never meets.
+@use 'sass:math';
+@use '../../core/tokens' as t;
+@use '../../core/functions' as f;
+
+$period: 24s;
+$a-top: f.tiles(t.$avenue-a-y);
+$a-depth: f.tiles(t.$avenue-a-d);
+$b-left: f.tiles(t.$avenue-b-x);
+$b-width: f.tiles(t.$avenue-b-w);
+
+// Drive on the right: eastbound uses the south lane, southbound the west lane.
+$lane-east: $a-top + $a-depth * 0.75;
+$lane-west: $a-top + $a-depth * 0.25;
+$lane-south: $b-left + $b-width * 0.25;
+$lane-north: $b-left + $b-width * 0.75;
+
+/// Strips px so values can go inside path().
+@function n($length) {
+  @return math.div($length, 1px);
+}
+
+$routes: (
+  a-east: 'M 0 #{n($lane-east)} H #{n(t.$world-w)}',
+  a-west: 'M #{n(t.$world-w)} #{n($lane-west)} H 0',
+  b-south: 'M #{n($lane-south)} 0 V #{n(t.$world-d)}',
+  b-north: 'M #{n($lane-north)} #{n(t.$world-d)} V 0',
+);
+
+@each $name, $d in $routes {
+  .car--#{$name} {
+    offset-path: path('#{$d}');
+  }
+}
