@@ -6,6 +6,7 @@ import { mkdirSync, rmSync, writeFileSync, copyFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { resolveIncludes } from './includes.js';
 import { compileStyles } from './styles.js';
+import { expandComponents } from './components.js';
 
 /**
  * @typedef {object} BuildReport
@@ -19,8 +20,8 @@ import { compileStyles } from './styles.js';
  * @param {{ root: string, outDir: string, transform?: (text: string, file: string) => string }} options
  * @returns {BuildReport}
  */
-export function build({ root, outDir, transform }) {
-  const html = resolveIncludes(join(root, 'src', 'index.html'), transform ? { root, transform } : { root });
+export function build({ root, outDir, transform = expandComponents }) {
+  const html = resolveIncludes(join(root, 'src', 'index.html'), { root, transform });
   const { css, loadedFiles } = compileStyles(join(root, 'scss', 'main.scss'));
 
   rmSync(outDir, { recursive: true, force: true });
