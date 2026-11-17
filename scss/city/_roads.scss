@@ -3,7 +3,7 @@
 @use '../core/tokens' as t;
 @use '../core/functions' as f;
 
-$paint: rgb(236 230 214 / 85%);
+$paint: f.weathered(rgb(236 230 214 / 85%), 70%, 55%);
 $dash: 14px;
 $gap: 10px;
 
@@ -47,7 +47,7 @@ $gap: 10px;
   transform: translateZ(1.1px);
   pointer-events: none;
   background:
-    linear-gradient(#3d4046, #3d4046) 50% 50% / #{f.tiles(t.$avenue-b-w)} #{f.tiles(t.$avenue-a-d)} no-repeat,
+    linear-gradient(f.weathered(#3d4046, 45%, 70%), f.weathered(#3d4046, 45%, 70%)) 50% 50% / #{f.tiles(t.$avenue-b-w)} #{f.tiles(t.$avenue-a-d)} no-repeat,
     repeating-linear-gradient(to right, $paint 0 3px, transparent 3px 6px) 50% 0 / #{f.tiles(t.$avenue-b-w)} 14px no-repeat,
     repeating-linear-gradient(to right, $paint 0 3px, transparent 3px 6px) 50% 100% / #{f.tiles(t.$avenue-b-w)} 14px no-repeat,
     repeating-linear-gradient(to bottom, $paint 0 3px, transparent 3px 6px) 0 50% / 14px #{f.tiles(t.$avenue-a-d)} no-repeat,

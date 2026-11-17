@@ -4,9 +4,9 @@
 @use '../core/functions' as f;
 @use '../core/mixins' as m;
 
-$deck: #464a50;
-$stone: #a59c8d;
-$rail: #d9d1c2;
+$deck: f.weathered(#464a50, 45%, 70%);
+$stone: f.weathered(#a59c8d, 0%, 70%);
+$rail: f.weathered(#d9d1c2, 60%, 66%);
 
 .bridge {
   position: absolute;

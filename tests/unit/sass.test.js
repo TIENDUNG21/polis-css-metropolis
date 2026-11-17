@@ -7,8 +7,20 @@ import { WORLD } from '../../tools/lib/components.js';
 
 const scssDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'scss');
 
-/** @param {string} source */
-const compile = (source) => sass.compileString(source, { loadPaths: [scssDir], style: 'compressed' }).css;
+/**
+ * Compiles a snippet against scss/. Warnings fail the test, as in the build.
+ * @param {string} source
+ */
+const compile = (source) =>
+  sass.compileString(source, {
+    loadPaths: [scssDir],
+    style: 'compressed',
+    logger: {
+      warn: (message) => {
+        throw new Error(`Sass warning: ${message}`);
+      },
+    },
+  }).css;
 
 describe('core/functions', () => {
   test('tiles() converts tiles to pixels', () => {
@@ -38,5 +50,17 @@ describe('tokens', () => {
   test('the world size in Sass matches the component validator', () => {
     const css = compile("@use 'core/tokens' as t; a { --cols: #{t.$world-cols}; --rows: #{t.$world-rows}; }");
     assert.equal(css, `a{--cols: ${WORLD.cols};--rows: ${WORLD.rows}}`);
+  });
+});
+
+describe('weathered()', () => {
+  test('mixes towards night ink by --night', () => {
+    const css = compile("@use 'core/functions' as f; a { color: f.weathered(#808080); }");
+    assert.equal(css, 'a{color:color-mix(in oklab, #808080, #0a1324 calc(var(--night) * 66%))}');
+  });
+
+  test('adds snow cover only when asked', () => {
+    const css = compile("@use 'core/functions' as f; a { color: f.weathered(#808080, 80%, 50%); }");
+    assert.match(css, /color-mix\(in oklab, color-mix\(in oklab, #808080, #eef2f4 calc\(var\(--snow\) \* 80%\)\), #0a1324 calc\(var\(--night\) \* 50%\)\)/);
   });
 });

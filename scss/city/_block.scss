@@ -2,9 +2,9 @@
 // --y, --w, --d in tiles). The kind sets the surface.
 @use '../core/functions' as f;
 
-$pavement: #b7afa2;
-$curb: #8f877b;
-$grass: #6c9450;
+$pavement: f.weathered(#b7afa2, 88%, 70%);
+$curb: f.weathered(#8f877b, 70%, 70%);
+$grass: f.weathered(#6c9450, 92%, 68%);
 
 .block {
   position: absolute;
@@ -25,7 +25,7 @@ $grass: #6c9450;
 }
 
 .block--plaza {
-  background-color: #c9bfae;
+  background-color: f.weathered(#c9bfae, 88%, 70%);
   background-image:
     linear-gradient(rgb(0 0 0 / 7%) 1px, transparent 1px),
     linear-gradient(90deg, rgb(0 0 0 / 7%) 1px, transparent 1px);

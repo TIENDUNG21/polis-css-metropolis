@@ -22,3 +22,19 @@
 @function height-var() {
   @return calc(var(--h) * #{t.$floor});
 }
+
+/// A surface colour under the current world state: it whitens with snow
+/// cover and darkens towards night ink. Every static colour in the city
+/// goes through this, so one property change re-lights the whole scene.
+/// @param {Color} $color
+/// @param {Number} $snow  how much snow shows on this surface (0% to 100%)
+/// @param {Number} $night how dark it gets at full night (0% to 100%)
+@function weathered($color, $snow: 0%, $night: 66%) {
+  $snowy: $color;
+
+  @if $snow != 0% {
+    $snowy: color-mix(in oklab, #{$color}, #eef2f4 calc(var(--snow) * #{$snow}));
+  }
+
+  @return color-mix(in oklab, #{$snowy}, #0a1324 calc(var(--night) * #{$night}));
+}

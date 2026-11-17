@@ -39,3 +39,80 @@
   inherits: true;
   initial-value: 0.2;
 }
+
+// Sky layers (opacity of each gradient).
+@property --sky-dawn {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --sky-day {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --sky-dusk {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --sky-night {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+// Sun: arm rotation in the sky, east-west position (+1 east, -1 west)
+// and height above the horizon (0 to 1).
+@property --sun-turn {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: -45deg;
+}
+
+@property --sun-x {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: -0.5;
+}
+
+@property --sun-height {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.6;
+}
+
+// Clock shown by the HUD (CSS counters print them).
+@property --hour {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: 15;
+}
+
+@property --minute {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: 0;
+}
+
+// Weather. --cloud dims the sun and shadows; the others drive their layers.
+@property --cloud {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --wet {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --fog {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}

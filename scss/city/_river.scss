@@ -3,8 +3,8 @@
 @use '../core/functions' as f;
 @use '../core/mixins' as m;
 
-$water: #3a7590;
-$water-deep: #1f4a5e;
+$water: f.weathered(#3a7590, 0%, 72%);
+$water-deep: f.weathered(#1f4a5e, 0%, 72%);
 
 .river {
   position: absolute;
@@ -22,5 +22,5 @@ $water-deep: #1f4a5e;
 @include m.slab-sides(river, t.$slab-depth - t.$river-sink);
 
 .river__side--s {
-  background: linear-gradient(to bottom, rgb(120 180 205 / 90%), $water-deep 40%, #3b2c22);
+  background: linear-gradient(to bottom, $water, $water-deep 40%, f.weathered(#3b2c22, 0%, 72%));
 }

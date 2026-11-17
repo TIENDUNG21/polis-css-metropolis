@@ -5,10 +5,10 @@
 @use '../core/functions' as f;
 @use '../core/mixins' as m;
 
-$asphalt: #3d4046;
-$soil: #5a4434;
-$soil-deep: #3b2c22;
-$stone: #8e877b;
+$asphalt: f.weathered(#3d4046, 45%, 70%);
+$soil: f.weathered(#5a4434, 0%, 72%);
+$soil-deep: f.weathered(#3b2c22, 0%, 72%);
+$stone: f.weathered(#8e877b, 0%, 70%);
 
 .land {
   position: absolute;
