@@ -12,7 +12,7 @@
 @use '../core/mixins' as m;
 
 $night-ink: #0a1324;
-$window-light: #ffd27a;
+$window-light: #f8cd78;
 
 // Window geometry per facade style: column period and window width along
 // the wall, floor period with sill and head heights measured from the floor.
@@ -87,14 +87,14 @@ $kinds: (
     mask-image:
       repeating-linear-gradient(#{$along}, transparent 0 $a, #000 $a $b, transparent $b $col),
       repeating-linear-gradient(#{$up}, transparent 0 $sill, #000 $sill $head, transparent $head t.$floor),
-      repeating-linear-gradient(#{$along}, #000 0 $col * 2, transparent $col * 2 $col * 5),
-      repeating-linear-gradient(#{$up}, #000 0 t.$floor * 2, transparent t.$floor * 2 t.$floor * 3);
+      repeating-linear-gradient(#{$along}, #000 0 $col, transparent $col $col * 3),
+      repeating-linear-gradient(#{$up}, #000 0 t.$floor * 2, transparent t.$floor * 2 t.$floor * 5);
     mask-composite: intersect, intersect, exclude;
     mask-position:
       0 0,
       0 0,
       calc(var(--seed) * #{$col}) calc(var(--seed) * #{$col}),
-      calc(var(--seed) * #{t.$floor * 2}) calc(var(--seed) * #{t.$floor});
+      calc(var(--seed) * #{t.$floor}) calc(var(--seed) * #{t.$floor * 2});
   }
 }
 

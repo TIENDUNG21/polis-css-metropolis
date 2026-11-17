@@ -1,0 +1,167 @@
+// Time of day. In Auto mode three animations on .polis write the world
+// state: `polis-day` (light, sky, sun), `polis-hours` and `polis-minutes`
+// (the HUD clock). One in-game day lasts 96 s, 4 s per hour, and the page
+// opens at 15:00. A preset stops the animations and sets the same
+// properties; because they are registered, the change is a 2 s transition.
+@use 'sass:math';
+@use '../../core/mixins' as m;
+
+$cycle: 96s;
+$hour: math.div($cycle, 24);
+$opens-at: 15; // hour shown when the page loads
+$fade: 2s;
+
+/// Keyframe position of an hour of the day.
+@function at($h) {
+  @return math.percentage(math.div($h, 24));
+}
+
+@keyframes polis-day {
+  0%,
+  #{at(5)} {
+    --night: 1;
+    --lights: 1;
+    --sky-night: 1;
+    --sky-dawn: 0;
+    --sky-day: 0;
+    --sky-dusk: 0;
+    --sun-height: 0;
+  }
+
+  0% {
+    --sun-turn: 180deg;
+    --sun-x: 0;
+  }
+
+  #{at(6)} {
+    --night: 0.35;
+    --lights: 0.5;
+    --sky-night: 0;
+    --sky-dawn: 1;
+    --sun-x: 1;
+    --sun-height: 0.05;
+  }
+
+  #{at(7.5)},
+  #{at(16.5)} {
+    --night: 0;
+    --lights: 0;
+    --sky-dawn: 0;
+    --sky-day: 1;
+    --sky-dusk: 0;
+  }
+
+  #{at(12)} {
+    --sun-x: 0;
+    --sun-height: 1;
+  }
+
+  #{at(18)} {
+    --night: 0.3;
+    --lights: 0.65;
+    --sky-day: 0;
+    --sky-dusk: 1;
+    --sun-x: -1;
+    --sun-height: 0.05;
+  }
+
+  #{at(19.5)},
+  100% {
+    --night: 1;
+    --lights: 1;
+    --sky-dusk: 0;
+    --sky-night: 1;
+    --sun-height: 0;
+  }
+
+  100% {
+    --sun-turn: -180deg;
+    --sun-x: 0;
+  }
+}
+
+@keyframes polis-hours {
+  from {
+    --hour: 0;
+  }
+
+  to {
+    --hour: 24;
+  }
+}
+
+@keyframes polis-minutes {
+  from {
+    --minute: 0;
+  }
+
+  to {
+    --minute: 60;
+  }
+}
+
+/// 1 for the sky layer a preset shows, 0 for the others.
+@function if-sky($sky, $name) {
+  @if $sky == $name {
+    @return 1;
+  }
+
+  @return 0;
+}
+
+/// Fixed time-of-day preset.
+@mixin preset($h, $night, $lights, $sky, $sun-x, $sun-height) {
+  --hour: #{math.floor($h)};
+  --minute: #{math.round(($h - math.floor($h)) * 60)};
+  --night: #{$night};
+  --lights: #{$lights};
+  --sky-dawn: #{if-sky($sky, dawn)};
+  --sky-day: #{if-sky($sky, day)};
+  --sky-dusk: #{if-sky($sky, dusk)};
+  --sky-night: #{if-sky($sky, night)};
+  --sun-turn: #{(12 - $h) * 15deg};
+  --sun-x: #{$sun-x};
+  --sun-height: #{$sun-height};
+
+  animation: none;
+}
+
+.polis {
+  // Walls facing the sun are lit, the others shaded; south walls get
+  // brighter as the sun climbs.
+  --shade-e: calc(0.34 - 0.24 * var(--sun-x));
+  --shade-w: calc(0.34 + 0.24 * var(--sun-x));
+  --shade-s: calc(0.24 - 0.16 * var(--sun-height));
+
+  animation:
+    polis-day $cycle linear infinite,
+    polis-hours $cycle steps(24, end) infinite,
+    polis-minutes $hour steps(4, end) infinite;
+  animation-delay: -$hour * $opens-at;
+  transition:
+    --night $fade,
+    --lights $fade * 1.25,
+    --sky-dawn $fade,
+    --sky-day $fade,
+    --sky-dusk $fade,
+    --sky-night $fade,
+    --sun-turn $fade,
+    --sun-x $fade,
+    --sun-height $fade;
+
+  @include m.when(time, dawn) {
+    @include preset(6, 0.35, 0.5, dawn, 1, 0.08);
+  }
+
+  @include m.when(time, day) {
+    @include preset(12.5, 0, 0, day, -0.12, 1);
+  }
+
+  @include m.when(time, dusk) {
+    @include preset(18, 0.3, 0.7, dusk, -1, 0.05);
+  }
+
+  @include m.when(time, night) {
+    @include preset(23, 1, 1, night, 0, 0);
+  }
+}

@@ -12,6 +12,8 @@
 @use 'city/nature';
 @use 'city/roads';
 @use 'systems/traffic/cars';
+@use 'systems/daynight/state';
+@use 'systems/daynight/sky';
 @use 'systems/camera/presets';
 @use 'ui/masthead';
 @use 'ui/console';
