@@ -1,0 +1,13 @@
+{
+  "extends": ["html-validate:recommended", "html-validate:a11y"],
+  "rules": {
+    "no-inline-style": [
+      "error",
+      {
+        "include": null,
+        "exclude": null,
+        "allowedProperties": ["--x", "--y", "--w", "--d", "--h", "--seed", "--delay", "--paint", "--s", "--hue"]
+      }
+    ]
+  }
+}

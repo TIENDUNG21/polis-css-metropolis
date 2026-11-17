@@ -1,0 +1,30 @@
+{
+  "name": "polis-css-metropolis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A living 3D city built with nothing but HTML and CSS.",
+  "license": "MIT",
+  "author": "TIENDUNG21",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint": "npm run lint:css && npm run lint:js",
+    "lint:css": "stylelint \"scss/**/*.scss\"",
+    "lint:js": "eslint .",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^22.20.5",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "html-validate": "^11.4.0",
+    "sass": "^1.108.2",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard-scss": "^17.0.0",
+    "typescript": "^7.0.2"
+  }
+}

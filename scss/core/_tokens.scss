@@ -1,0 +1,15 @@
+// Design tokens shared by every system. Geometry is in tiles and floors so
+// the HTML can stay in small integers.
+
+// Identity
+$ink: #0a0a0a;
+$paper: #ededed;
+$accent: #ff9e64;
+$muted: #9a9a9a;
+
+// Geometry
+$tile: 20px;
+$floor: 7px;
+$world-cols: 60;
+$world-rows: 44;
+$slab-depth: 28px;
