@@ -10,12 +10,15 @@
     "node": ">=22"
   },
   "scripts": {
+    "build": "node tools/build.js",
+    "check:dist": "node tools/check-dist.js dist",
     "lint": "npm run lint:css && npm run lint:js",
     "lint:css": "stylelint \"scss/**/*.scss\"",
     "lint:js": "eslint .",
+    "lint:html": "html-validate dist/index.html",
     "typecheck": "tsc -p tsconfig.json",
-    "check:dist": "node tools/check-dist.js dist",
-    "test": "node --test \"tests/unit/*.test.js\""
+    "test": "node --test \"tests/unit/*.test.js\"",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run check:dist && npm run lint:html"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
