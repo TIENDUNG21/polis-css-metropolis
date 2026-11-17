@@ -2,14 +2,14 @@
 // state: `polis-day` (light, sky, sun), `polis-hours` and `polis-minutes`
 // (the HUD clock). One in-game day lasts 96 s, 4 s per hour, and the page
 // opens at 15:00. A preset stops the animations and sets the same
-// properties; because they are registered, the change is a 2 s transition.
+// properties; because they are registered, the change is a transition
+// (durations in systems/_transitions.scss).
 @use 'sass:math';
 @use '../../core/mixins' as m;
 
 $cycle: 96s;
 $hour: math.div($cycle, 24);
 $opens-at: 15; // hour shown when the page loads
-$fade: 2s;
 
 /// Keyframe position of an hour of the day.
 @function at($h) {
@@ -138,16 +138,6 @@ $fade: 2s;
     polis-hours $cycle steps(24, end) infinite,
     polis-minutes $hour steps(4, end) infinite;
   animation-delay: -$hour * $opens-at;
-  transition:
-    --night $fade,
-    --lights $fade * 1.25,
-    --sky-dawn $fade,
-    --sky-day $fade,
-    --sky-dusk $fade,
-    --sky-night $fade,
-    --sun-turn $fade,
-    --sun-x $fade,
-    --sun-height $fade;
 
   @include m.when(time, dawn) {
     @include preset(6, 0.35, 0.5, dawn, 1, 0.08);

@@ -1,0 +1,22 @@
+// How fast each world-state property moves when a control changes it.
+// Kept in one declaration: a second `transition` on .polis would replace
+// this one, not add to it.
+
+.polis {
+  transition:
+    --night 2s,
+    --lights 2.5s,
+    --sky-dawn 2s,
+    --sky-day 2s,
+    --sky-dusk 2s,
+    --sky-night 2s,
+    --sun-turn 2s,
+    --sun-x 2s,
+    --sun-height 2s,
+    --cloud 3s,
+    --rain 1.5s,
+    --snowfall 1.5s,
+    --wet 3s,
+    --snow 6s,
+    --fog 3s;
+}

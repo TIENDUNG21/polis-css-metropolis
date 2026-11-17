@@ -12,9 +12,10 @@
 @use 'city/nature';
 @use 'city/roads';
 @use 'systems/traffic/cars';
-@use 'systems/daynight/state';
+@use 'systems/daynight/state' as daynight-state;
 @use 'systems/daynight/sky';
 @use 'systems/daynight/shadows';
+@use 'systems/transitions';
 @use 'systems/camera/presets';
 @use 'ui/masthead';
 @use 'ui/console';
