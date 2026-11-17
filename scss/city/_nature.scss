@@ -1,0 +1,163 @@
+// Trees, street lamps and flat features (ponds, paths, lawns, fountains).
+// A tree is one element: a canopy disc seen from above plus two crossed
+// vertical planes (::before, ::after) that draw trunk and crown from the side.
+@use '../core/tokens' as t;
+@use '../core/functions' as f;
+
+$night-ink: #0a1324;
+$snow: #eef2f4;
+
+/// A colour that whitens with snow and darkens at night.
+@function weathered($color) {
+  @return color-mix(in oklab, color-mix(in oklab, #{$color}, #{$snow} calc(var(--snow) * 72%)), #{$night-ink} calc(var(--night) * 62%));
+}
+
+.tree {
+  --size: calc(var(--s) * 21px);
+  --crown-z: calc(var(--s) * 18px);
+  --leaf: #{weathered(#5d8c43)};
+  --leaf-dark: #{weathered(#3f6a2f)};
+  --trunk: #{weathered(#5b4332)};
+
+  position: absolute;
+  top: f.tile-var(y);
+  left: f.tile-var(x);
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  transform: translateZ(var(--crown-z));
+  background: radial-gradient(circle at 38% 35%, var(--leaf), var(--leaf-dark));
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 50%;
+    left: 0;
+    width: 100%;
+    height: calc(var(--crown-z) + var(--size) / 2);
+    transform-origin: bottom;
+    backface-visibility: visible;
+    background:
+      radial-gradient(circle calc(var(--size) / 2) at 50% calc(100% - var(--crown-z)), var(--leaf) 0 92%, var(--leaf-dark) 96%, transparent 100%),
+      linear-gradient(to right, transparent 44%, var(--trunk) 44% 56%, transparent 56%) bottom / 100% var(--crown-z) no-repeat;
+  }
+
+  &::before {
+    transform: translateZ(calc(var(--crown-z) * -1)) rotateX(-90deg);
+  }
+
+  &::after {
+    transform: translateZ(calc(var(--crown-z) * -1)) rotateZ(90deg) rotateX(-90deg);
+  }
+}
+
+.tree--pine {
+  --leaf: #{weathered(#3f6f45)};
+  --leaf-dark: #{weathered(#2b5233)};
+
+  width: calc(var(--size) * 0.6);
+  height: calc(var(--size) * 0.6);
+  margin: calc(var(--size) * -0.3) 0 0 calc(var(--size) * -0.3);
+  transform: translateZ(calc(var(--crown-z) * 0.5));
+
+  &::before,
+  &::after {
+    height: calc(var(--crown-z) * 2);
+    clip-path: polygon(50% 0, 100% 78%, 56% 78%, 56% 100%, 44% 100%, 44% 78%, 0 78%);
+    background: linear-gradient(to top, var(--trunk) 22%, var(--leaf-dark) 22%, var(--leaf));
+  }
+
+  &::before {
+    transform: translateZ(calc(var(--crown-z) * -0.5)) rotateX(-90deg);
+  }
+
+  &::after {
+    transform: translateZ(calc(var(--crown-z) * -0.5)) rotateZ(90deg) rotateX(-90deg);
+  }
+}
+
+.tree--autumn {
+  --leaf: #{weathered(#c9873e)};
+  --leaf-dark: #{weathered(#9c5d2b)};
+}
+
+// Street lamp: a pole plane and a pool of light on the ground at night.
+.lamp {
+  position: absolute;
+  top: f.tile-var(y);
+  left: f.tile-var(x);
+  transform-style: preserve-3d;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -1px;
+    width: 2px;
+    height: 18px;
+    transform-origin: bottom;
+    transform: rotateX(-90deg);
+    backface-visibility: visible;
+    background: linear-gradient(to top, #3a3f45 84%, color-mix(in srgb, #545a61, #ffe3a6 calc(var(--lights) * 100%)) 84%);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -16px;
+    left: -16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(255 205 120 / 60%), rgb(255 205 120 / 0%) 70%);
+    opacity: var(--lights);
+    transform: translateZ(0.5px);
+  }
+}
+
+// Flat features drawn on a block, placed like buildings.
+.feature {
+  position: absolute;
+  top: f.tile-var(y);
+  left: f.tile-var(x);
+  width: f.tile-var(w);
+  height: f.tile-var(d);
+  transform: translateZ(0.5px);
+}
+
+.feature--pond {
+  border-radius: 46% 54% 50% 50% / 55% 45%;
+  background:
+    radial-gradient(ellipse at 35% 30%, rgb(255 255 255 / 22%), transparent 45%),
+    color-mix(in oklab, #4f8aa3, #e9eef2 calc(var(--snow) * 80%));
+  box-shadow: 0 0 0 3px #9c927f;
+}
+
+.feature--path {
+  background: #cdbf9f;
+}
+
+.feature--lawn {
+  background-color: #6f9a52;
+  background-image: radial-gradient(rgb(255 255 255 / 7%) 1px, transparent 2px);
+  background-size: 9px 9px;
+}
+
+.feature--fountain {
+  border-radius: 50%;
+  background: radial-gradient(circle, #e9f3f7 0 12%, #5f9cb6 14% 64%, #b9ae9a 66%);
+}
+
+.feature--field {
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgb(255 255 255 / 70%) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+    #5f9147;
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 70%);
+}
+
+.feature--dock {
+  background: repeating-linear-gradient(90deg, #8a6a4c 0 4px, #6f533b 4px 5px);
+}
