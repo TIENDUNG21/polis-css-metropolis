@@ -38,6 +38,7 @@
   @include meta.load-css('ui/masthead');
   @include meta.load-css('ui/console');
   @include meta.load-css('ui/hud');
+  @include meta.load-css('ui/colophon');
 }
 
 @layer a11y {
