@@ -1,3 +1,4 @@
+@use 'sass:meta';
 @use 'tokens' as t;
 
 /// Hidden visually, still read by assistive technology and still focusable.
@@ -63,7 +64,11 @@
 /// @param {String} $group radio name
 /// @param {String} $value radio value
 @mixin when($group, $value) {
-  &:has(input[name='#{$group}'][value='#{$value}']:checked) {
+  // inspect() keeps names like `snow` (also a CSS colour) as plain text.
+  $g: meta.inspect($group);
+  $v: meta.inspect($value);
+
+  &:has(input[name='#{$g}'][value='#{$v}']:checked) {
     @content;
   }
 }

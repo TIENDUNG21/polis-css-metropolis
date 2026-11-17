@@ -44,6 +44,11 @@ describe('core/mixins', () => {
     const css = compile("@use 'core/mixins' as m; .polis { @include m.when(camera, plan) { --cam-tilt: 0deg; } }");
     assert.equal(css, '.polis:has(input[name=camera][value=plan]:checked){--cam-tilt: 0deg}');
   });
+
+  test('when() accepts values that are also CSS colour names', () => {
+    const css = compile("@use 'core/mixins' as m; .polis { @include m.when(weather, snow) { --snow: 1; } }");
+    assert.equal(css, '.polis:has(input[name=weather][value=snow]:checked){--snow: 1}');
+  });
 });
 
 describe('tokens', () => {
